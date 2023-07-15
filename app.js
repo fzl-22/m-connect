@@ -1,8 +1,8 @@
 const path = require("path");
 const uuid = require("uuid");
 const express = require("express");
-const Intl = require("intl");
 const mysql = require("mysql");
+const session = require("express-session");
 require("dotenv").config();
 
 const app = express();
@@ -19,6 +19,13 @@ app.set("view engine", "ejs");
 
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
+app.use(
+  session({
+    secret: "my-secret-key",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 app.get("/", function (req, res) {
   res.render("index");
@@ -35,7 +42,7 @@ app.get("/submission-form", function (req, res) {
 app.post("/submission-form", function (req, res) {
   const id = uuid.v4();
   const now = new Date();
-  const createdAt = now.toISOString().replace("T", " ").replace('Z', '');
+  const createdAt = now.toISOString().replace("T", " ").replace("Z", "");
   const editedAt = createdAt;
 
   const requestBody = req.body;
@@ -70,9 +77,47 @@ app.post("/submission-form", function (req, res) {
     } else {
       console.log("Data inserted successfully");
     }
+    connection.end();
   });
 
   res.redirect("submission-form-success");
+});
+
+app.get("/admin/login", function (req, res) {
+  res.render("admin-login");
+});
+
+app.post("/admin/login", function (req, res) {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  const selectQuery =
+    "SELECT * FROM admin_users WHERE username = ? AND password = ?";
+  const values = [username, password];
+
+  connection.query(selectQuery, values, (error, results) => {
+    if (error) {
+      console.error("Error validating admin credentials:", error);
+      res.status(500).send("Error validating admin credentials");
+    } else {
+      if (results.length > 0) {
+        // Admin credentials are valid
+        req.session.isAdminAuthenticated = true; // Set a session flag to indicate admin authentication
+        res.redirect("/dashboard"); // Redirect to the admin dashboard
+      } else {
+        // Admin credentials are invalid
+        res.render("admin-login", { error: "Invalid username or password" });
+      }
+    }
+  });
+});
+
+app.get("/dashboard", function (req, res) {
+  if (req.session.isAdminAuthenticated) {
+    res.render("dashboard");
+  } else {
+    res.redirect("/admin/login"); // Redirect to the admin login page if not authenticated
+  }
 });
 
 app.listen(3001);
