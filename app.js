@@ -35,17 +35,7 @@ app.get("/submission-form", function (req, res) {
 app.post("/submission-form", function (req, res) {
   const id = uuid.v4();
   const now = new Date();
-  const options = {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  };
-  const formatter = new Intl.DateTimeFormat("en-US", options);
-  var createdAt = formatter.format(now).replace(/,/g, "");
-  createdAt = createdAt.toString().replace(/\//g, '-');
+  const createdAt = now.toISOString().replace("T", " ").replace('Z', '');
   const editedAt = createdAt;
 
   const requestBody = req.body;
@@ -79,7 +69,6 @@ app.post("/submission-form", function (req, res) {
       res.status(500).send("Error inserting data");
     } else {
       console.log("Data inserted successfully");
-      res.status(200).send("Data inserted successfully");
     }
   });
 
