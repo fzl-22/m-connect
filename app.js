@@ -114,10 +114,68 @@ app.post("/admin/login", function (req, res) {
 
 app.get("/dashboard", function (req, res) {
   if (req.session.isAdminAuthenticated) {
-    res.render("dashboard");
+    const selectQuery = "SELECT * FROM data_pengajuan";
+
+    connection.query(selectQuery, (error, results) => {
+      if (error) {
+        console.error("Error retrieving data:", error);
+        res.status(500).send("Error retrieving data");
+      } else {
+        res.render("dashboard", { submissions: results });
+      }
+    });
   } else {
     res.redirect("/admin/login"); // Redirect to the admin login page if not authenticated
   }
 });
+
+app.get("/dashboard/:id", function (req, res) {
+  if (req.session.isAdminAuthenticated) {
+    const id = req.params.id;
+    const selectQuery = "SELECT * FROM data_pengajuan WHERE id = ?";
+
+    const values = [id];
+
+    connection.query(selectQuery, values, (error, results) => {
+      if (error) {
+        console.error("Error retrieving data:", error);
+        res.status(500).send("Error retrieving data");
+      } else {
+        const submission = results[0]; // Access the first row of results
+
+        if (submission) {
+          res.render("submission-detail", { submission: submission });
+        } else {
+          res.status(404).send("Submission not found");
+        }
+      }
+    });
+  } else {
+    res.redirect("/admin/login"); // Redirect to the admin login page if not authenticated
+  }
+});
+
+// app.get("/dashboard/:id", function (req, res) {
+//   const submissionId = req.query.id;
+
+//   const selectQuery =
+//     "SELECT nama, nama_PT, email, status, no_telp_wa, deskripsi FROM data_pengajuan WHERE id = ?";
+
+//   connection.query(selectQuery, [submissionId], (error, results) => {
+//     console.log(results)
+//     if (error) {
+//       console.error("Error retrieving submission details:", error);
+//       res.status(500).json({ error: "Error retrieving submission details" });
+//     } else {
+//       if (results.length > 0) {
+//         const submissionDetails = results[0];
+//         console.log(submissionDetails);
+//         res.json(submissionDetails);
+//       } else {
+//         res.status(404).json({ error: "Submission not found" });
+//       }
+//     }
+//   });
+// });
 
 app.listen(3001);

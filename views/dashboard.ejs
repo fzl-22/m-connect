@@ -1,11 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .card {
+      background-color: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+  </style>
 </head>
 <body>
-  <h1>Ini Dashboard</h1>
+  <div class="container">
+    <% if (submissions && submissions.length > 0) { %>
+      <% submissions.forEach(function (submission) { %>
+        <%- include('includes/dashboard/dashboard-item.ejs', { submission : submission }); %>
+      <% }); %>
+    <% } else { %>
+      <p>No submissions found.</p>
+    <% } %>
+  </div>
 </body>
 </html>
