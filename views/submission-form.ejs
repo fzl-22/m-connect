@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Data Submission Form</title>
+</head>
+<body>
+  <h1>Data Submission Form</h1>
+
+  <form action="/submission-form" method="POST">
+    <label for="nama">Nama:</label>
+    <input type="text" name="nama" id="nama" required><br>
+
+    <label for="nama_PT">Nama PT:</label>
+    <input type="text" name="nama_PT" id="nama_PT" required><br>
+
+    <label for="alamat_PT">Alamat PT:</label>
+    <input type="text" name="alamat_PT" id="alamat_PT" required><br>
+
+    <label for="email">Email:</label>
+    <input type="email" name="email" id="email" required><br>
+
+    <label for="no_telp_wa">No. Telp/WA:</label>
+    <input type="tel" name="no_telp_wa" id="no_telp_wa" required><br>
+
+    <label for="jenis_pengajuan">Jenis Pengajuan:</label>
+    <input type="text" name="jenis_pengajuan" id="jenis_pengajuan" required><br>
+
+    <label for="deskripsi">Deskripsi:</label>
+    <textarea name="deskripsi" id="deskripsi" rows="5" required></textarea><br>
+
+    <input type="hidden" name="status" value="backlog">
+
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>
