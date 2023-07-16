@@ -202,126 +202,24 @@ app.post("/schedules", function (req, res) {
   });
 });
 
+app.delete("/schedules/:id", function (req, res) {
+  const id = req.params.id;
 
+  const deleteQuery = `DELETE FROM schedules WHERE id = ?`;
 
-// client_secret_109198904198-jheuh9u5t3khinslqbqng1tr6gme4nf4.apps.googleusercontent.com.json
+  connection.query(deleteQuery, [id], (error, results) => {
+    if (error) {
+      console.error("Error deleting schedule:", error);
+      res.status(500).send("Error deleting schedule");
+    } else {
+      console.log("Schedule deleted successfully");
+      res.sendStatus(204); // Send a success status code (204 No Content) indicating successful deletion
+    }
+  });
+});
 
-// app.get("/dashboard/spreadsheet", function (req, res) {
-//   if (req.session.isAdminAuthenticated) {
-//     // Load the credentials from a JSON file (generated from Google Cloud Console)
-//     const credentials = require("./client_secret_109198904198-jheuh9u5t3khinslqbqng1tr6gme4nf4.apps.googleusercontent.com.json");
-
-//     // Define the required scopes
-//     const SCOPES = ["https://www.googleapis.com/auth/drive"];
-
-//     // Create a new OAuth2 client
-//     const { client_secret, client_id, redirect_uris } = credentials.installed;
-//     const oAuth2Client = new google.auth.OAuth2(
-//       client_id,
-//       client_secret,
-//       redirect_uris[0]
-//     );
-
-//     // Generate the URL for user authorization
-//     const authUrl = oAuth2Client.generateAuthUrl({
-//       access_type: "offline",
-//       scope: SCOPES,
-//     });
-
-//     res.redirect(authUrl);
-//   } else {
-//     res.redirect("/admin/login"); // Redirect to the admin login page if not authenticated
-//   }
-// });
-
-// app.get("/dashboard/spreadsheet/callback", function (req, res) {
-//   if (req.session.isAdminAuthenticated) {
-//     // Load the credentials from a JSON file (generated from Google Cloud Console)
-//     const credentials = require('./client_secret_109198904198-jheuh9u5t3khinslqbqng1tr6gme4nf4.apps.googleusercontent.com.json');
-
-//     // Create a new OAuth2 client
-//     const { client_secret, client_id, redirect_uris } = credentials.installed;
-//     const oAuth2Client = new google.auth.OAuth2(
-//       client_id, client_secret, redirect_uris[0]
-//     );
-
-//     // Get the authorization code from the query parameters
-//     const code = req.query.code;
-
-//     // Exchange the authorization code for access and refresh tokens
-//     oAuth2Client.getToken(code, (err, token) => {
-//       if (err) {
-//         console.error('Error retrieving access token', err);
-//         res.status(500).send('Error retrieving access token');
-//         return;
-//       }
-
-//       // Store the tokens for later use (e.g., refresh token)
-//       fs.writeFileSync('./token.json', JSON.stringify(token));
-
-//       // Set the credentials for future API requests
-//       oAuth2Client.setCredentials(token);
-
-//       // Create a new spreadsheet using the Google Sheets API
-//       const sheets = google.sheets({ version: 'v4', auth: oAuth2Client });
-
-//       sheets.spreadsheets.create({
-//         resource: {
-//           properties: {
-//             title: 'New Spreadsheet'
-//           }
-//         }
-//       }, (err, response) => {
-//         if (err) {
-//           console.error('Error creating spreadsheet', err);
-//           res.status(500).send('Error creating spreadsheet');
-//           return;
-//         }
-
-//         const spreadsheetId = response.data.spreadsheetId;
-
-//         // Fetch the data from MySQL database
-//         const selectQuery = 'SELECT id, nama, nama_PT, email FROM data_pengajuan';
-//         connection.query(selectQuery, (error, results) => {
-//           if (error) {
-//             console.error('Error retrieving data from MySQL:', error);
-//             res.status(500).send('Error retrieving data from MySQL');
-//             return;
-//           }
-
-//           const values = results.map((result) => [
-//             result.id,
-//             result.nama,
-//             result.nama_PT,
-//             result.email,
-//           ]);
-
-//           // Write the data to the spreadsheet
-//           sheets.spreadsheets.values.update({
-//             spreadsheetId: spreadsheetId,
-//             range: 'Sheet1!A1:D',
-//             valueInputOption: 'USER_ENTERED',
-//             resource: {
-//               values: values,
-//             },
-//           }, (err, response) => {
-//             if (err) {
-//               console.error('Error populating spreadsheet', err);
-//               res.status(500).send('Error populating spreadsheet');
-//               return;
-//             }
-
-//             const spreadsheetUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}`;
-
-//             res.redirect(spreadsheetUrl);
-//           });
-//         });
-//       });
-//     });
-//   } else {
-//     res.redirect("/admin/login"); // Redirect to the admin login page if not authenticated
-//   }
-// });
-
+app.use(function (req, res) {
+  res.send("<h1>404 Not Found!</h1>");
+});
 
 app.listen(3001);
