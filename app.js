@@ -174,6 +174,35 @@ app.get("/schedules", function (req, res) {
   }
 });
 
+app.post("/schedules", function (req, res) {
+  const id = uuid.v4();
+  const requestBody = req.body;
+
+  const schedule = {
+    id: id,
+    ...requestBody,
+  };
+
+  const insertQuery = `INSERT INTO schedules (id, nama_PT, time) VALUES (?, ?, ?)`;
+
+  const values = [
+    schedule.id,
+    schedule.nama_PT,
+    schedule.time
+  ];
+
+  connection.query(insertQuery, values, (error, results) => {
+    if (error) {
+      console.error("Error inserting data:", error);
+      res.status(500).send("Error inserting data");
+    } else {
+      console.log("Data inserted successfully");
+      res.redirect("/schedules"); // Redirect to the "/schedules" page on successful data insertion
+    }
+  });
+});
+
+
 
 // client_secret_109198904198-jheuh9u5t3khinslqbqng1tr6gme4nf4.apps.googleusercontent.com.json
 

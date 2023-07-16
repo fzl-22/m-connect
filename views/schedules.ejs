@@ -28,6 +28,15 @@
   </style>
 </head>
 <body>
+  <form action="/schedules" method="POST">
+    <label for="nama_PT">Nama PT:</label>
+    <input type="text" name="nama_PT" id="nama_PT" required>
+
+    <label for="time">Time:</label>
+    <input type="date" name="time" id="time" required>
+
+    <button type="submit">Submit</button>
+  </form>
   <div class="container">
     <% if (schedules && schedules.length > 0) { %>
       <% schedules.forEach(function (schedule) { %>
