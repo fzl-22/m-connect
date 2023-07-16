@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .card {
+      background-color: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <% if (schedules && schedules.length > 0) { %>
+      <% schedules.forEach(function (schedule) { %>
+        <%- include('includes/schedules/schedule-item.ejs', { schedule : schedule }); %>
+      <% }); %>
+    <% } else { %>
+      <p>No submissions found.</p>
+    <% } %>
+  </div>
+</body>
+</html>
